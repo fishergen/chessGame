@@ -78,7 +78,15 @@ public class CLITest {
         List<String> output = captureOutput();
 
         assertNotNull("Should have some output for the new positions", output);
-        assertEquals("Should have moves * characters for Pawn = 64 total.",64,output.get(4).length()); //once move validity is working, this will be 32 total + bishops
+        assertEquals("Should have moves * characters for all possible moves = 80 total.", 80, output.get(4).length()); //once move validity is working, this will be 32 total + bishops
+    }
+
+    @Test
+    public void testMoveCommand() throws Exception {
+        runCliWithInput("move h7 h6");
+        List<String> output = captureOutput();
+
+        assertNotNull("Should have some outpu for the new positions", output);
     }
 
 

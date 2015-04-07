@@ -22,32 +22,28 @@ public class Bishop extends Piece {
 
 
     @Override
-    public List<Position> getPossibleMoves() {
-        Position currentPos = getCurrentPosition();
-        int currentRow = currentPos.getRow();
-        int moveCount = getMoveCount();
-        if (moveCount == 0)
-            currentRow = currentRow + 2;
-        else
-            currentRow = currentRow + 1;
-        Position potentialPos = currentPos;
-        potentialPos.setRow(currentRow);
+    public List<Position> getPossibleMoves(Position currentPosition) {
+        int[] travelDirectionList = {1,-1};
+        int currentRow = currentPosition.getRow();
+        char currentCol = currentPosition.getColumn();
         List<Position> positionList = new ArrayList<Position>();
-        positionList.add(potentialPos);
-
+        int newRow;
+        char rightCol,leftCol;
+        int i;
+        //while not on edge of board
+        //while (currentPosition.atBoardEdge() == false){
+            for (i=0; i<travelDirectionList.length; i++) {
+                newRow = currentRow + 1 * i;
+                rightCol = currentPosition.moveRight(currentCol);
+                Position rightPos = new Position(rightCol, newRow);
+                positionList.add(rightPos);
+                leftCol = currentPosition.moveLeft(currentCol);
+                Position leftPos = new Position(leftCol, newRow);
+                positionList.add(leftPos);
+            }
+        //}
         return positionList;
     }
 
-    @Override
-    public boolean isValidMove(GameState state){
-        int currentRow = getCurrentPosition().getRow();
-        char currentCol = getCurrentPosition().getColumn();
-        int blockedRow = currentRow++;
-        Position blockedPosition = new Position(currentCol,blockedRow);
-        if (!state.isPieceAt(blockedPosition)){
-            return true;
-        }
-        return false;
-    }
 
 }

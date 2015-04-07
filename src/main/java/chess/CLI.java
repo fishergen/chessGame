@@ -69,7 +69,7 @@ public class CLI {
                     listMoves();
                     writeOutput("The following moves are available:");
                 } else if (input.startsWith("move")) {
-                    writeOutput("====> Move Is Not Implemented (yet) <====");
+                    convertStringToPosition(input);
                 } else {
                     writeOutput("I didn't understand that.  Type 'help' for a list of commands.");
                 }
@@ -83,6 +83,18 @@ public class CLI {
     }
 
     private void listMoves(){writeOutput(getMovesAsStrings(gameState.getPossibleMoves()));}
+
+    //private void move(){}
+
+    private void convertStringToPosition(String input){
+
+        String[] args = input.split(" ");
+        String firstArg = args[1];
+        String secondArg = args[2];
+        Position currentPos = new Position(firstArg);
+        Position newPos = new Position(secondArg);
+        gameState.move(currentPos, newPos);
+    }
 
     private void showBoard() {
         writeOutput(getBoardAsString());
@@ -122,7 +134,6 @@ public class CLI {
         for (Position p : positionList){
             String pos = p.toString();
             builder.append(pos).append(NEWLINE);
-            //builder.append(NEWLINE);
         }
         return builder.toString();
     }

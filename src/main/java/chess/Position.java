@@ -1,5 +1,7 @@
 package chess;
 
+import chess.pieces.Piece;
+
 /**
  * Describes a position on the Chess Board
  */
@@ -10,6 +12,8 @@ public class Position {
     public static final char MAX_COLUMN = 'h';
     private int row;
     private char column;
+
+    private Piece taken;
 
     /**
      * Create a new position object
@@ -42,6 +46,16 @@ public class Position {
         return column;
     }
 
+    public void setColumn(char column) { this.column = column; }
+
+    /*
+    public boolean isAvailable(Position potentialPos){
+        if (potentialPos.getRow()==row && potentialPos.getColumn()==column){
+            return false;
+        }
+        return true;
+    }*/
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -68,5 +82,36 @@ public class Position {
     public String toString() {
         return "" + column + row;
     }
+
+    public char moveRight(char column){
+        int columnAscii = (int)column + 1;
+        char rightColumn = (char)columnAscii;
+        return rightColumn;
+    }
+
+    public char moveOver (char column, int direction){
+        int columnAscii = (int)column + 1*direction;
+        char overColumn = (char)columnAscii;
+        return overColumn;
+    }
+
+    public char moveLeft(char column){
+        int columnAscii = (int)column - 1;
+        char leftColumn = (char)columnAscii;
+        return leftColumn;
+    }
+
+    public boolean atBoardEdge() {
+        char currentColumn = this.getColumn();
+        int currentRow = this.getRow();
+        while (currentColumn <= Position.MAX_COLUMN &&
+                currentColumn >= Position.MIN_COLUMN &&
+                currentRow <= Position.MAX_ROW &&
+                currentRow >= Position.MIN_ROW) {
+            return false;
+        }
+        return true;
+    }
+    
 
 }

@@ -21,7 +21,7 @@ public class Knight extends Piece {
         return 'n';
     }
 
-    public List<Position> getPossibleMoves() {
+    public List<Position> getPossibleMoves(Position currentPosition) {
         Position currentPos = getCurrentPosition();
         int currentRow = currentPos.getRow();
         int moveCount = getMoveCount();
@@ -35,18 +35,6 @@ public class Knight extends Piece {
         positionList.add(potentialPos);
 
         return positionList;
-    }
-
-    @Override
-    public boolean isValidMove(GameState state){
-        int currentRow = getCurrentPosition().getRow();
-        char currentCol = getCurrentPosition().getColumn();
-        int blockedRow = currentRow++;
-        Position blockedPosition = new Position(currentCol,blockedRow);
-        if (!state.isPieceAt(blockedPosition)){
-            return true;
-        }
-        return false;
     }
 
 }

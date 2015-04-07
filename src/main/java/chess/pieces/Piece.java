@@ -3,6 +3,7 @@ package chess.pieces;
 import chess.GameState;
 import chess.Player;
 import chess.Position;
+import javafx.geometry.Pos;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 
 import java.util.List;
@@ -42,6 +43,23 @@ public abstract class Piece {
         return moveDirection;
     }
 
+    public boolean notOnEdge(Position currentPosition) {
+        while (currentPosition.getColumn() < Position.MAX_COLUMN &&
+                currentPosition.getColumn() > Position.MIN_COLUMN &&
+                currentPosition.getRow() < Position.MAX_ROW &&
+                currentPosition.getRow() > Position.MIN_ROW) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isValidMove(GameState state, Position potentialPosition){
+        if (!state.isPieceAt(potentialPosition)){
+            return true;
+        }
+        return false;
+    }
+
     public Position getCurrentPosition(){
         return currentPosition;
     }
@@ -54,7 +72,7 @@ public abstract class Piece {
         return moveCount;
     }
 
-    public void setMoveCount(){
+    public void setMoveCount(int moveCount){
         this.moveCount = moveCount;
     }
 
@@ -64,7 +82,7 @@ public abstract class Piece {
 
     protected abstract char getIdentifyingCharacter();
 
-    public abstract List<Position> getPossibleMoves();
+    public abstract List<Position> getPossibleMoves(Position currentPosition);
 
-    public abstract boolean isValidMove(GameState gameState);
+
 }

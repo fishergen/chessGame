@@ -7,6 +7,7 @@ import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Class that represents the current state of the game.  Basically, what pieces are in which positions on the
@@ -50,13 +51,12 @@ public class GameState {
         this.currentPlayer = currentPlayer;
     }
 
-    public int getTurn() {
+    public void setTurn(int turnCount) {
         if ((turnCount & 1) == 0 ) {
             setCurrentPlayer(Player.White);
         }else{
             setCurrentPlayer(Player.Black);
         }
-        return turnCount;
     }
 
     /**
@@ -135,8 +135,6 @@ public class GameState {
         gameState.put(position, piece);
     }
 
-    //public Position getPositionFor(Piece piece) {} to implement this will not be efficient unless we use bidi maps
-    //do we really need bidi maps?
     public Position getPositionFor(Piece piece) { return gameState.getKey(piece); }
 
     public List<Piece> getAllPieces(){
@@ -164,19 +162,48 @@ public class GameState {
         return playerPieces;
     }
 
-    public List<Position> getPossibleMoves(){
+    public CopyOnWriteArrayList<Position> getPossibleMoves(){
         List<Piece> playerPieces = getPlayerPieces(currentPlayer);
-        List<Position> allPossibleMoves = new ArrayList<Position>();
+        CopyOnWriteArrayList<Position> allPossibleMoves = new CopyOnWriteArrayList<Position>();
+        //List<Position> validMoves;
         try{
             for (Piece piece : playerPieces) {
-                for (Position move : piece.getPossibleMoves()) {
+                for (Position move : piece.getPossibleMoves(piece.getCurrentPosition())) {
                     allPossibleMoves.add(move);
                     }
                 }
         } catch(NullPointerException e){
             throw new RuntimeException("There must be moves, or else the game is over.", e);
         }
+        arePossibleMovesValid(allPossibleMoves);
+        //return validMoves;
         return allPossibleMoves;
+    }
+
+    public List<Position> arePossibleMovesValid (List<Position> possibleMoves){
+        for (Position move : possibleMoves) {
+            if (isPieceAt(move)){
+                possibleMoves.remove(move);
+            }
+        }
+        return possibleMoves;
+    }
+
+    public void move (Position oldPosition, Position newPosition){
+        Piece toMove = getPieceAt(oldPosition);
+        List<Position> possibleMoves = toMove.getPossibleMoves(oldPosition);
+        try {
+            if (possibleMoves.contains(newPosition)){
+                toMove.setCurrentPosition(newPosition);
+                placePiece(toMove, newPosition);
+                turnCount = turnCount + 1;
+                setTurn(turnCount);
+            }else{
+                System.out.println("This move is not valid. Please select a valid move for your piece.");
+            }
+        } catch(NullPointerException e){
+            throw new RuntimeException("You have entered an invalid move. Please enter a valid move.", e);
+        }
     }
 
 }

@@ -3,6 +3,7 @@ package chess.pieces;
 import chess.GameState;
 import chess.Player;
 import chess.Position;
+import javafx.geometry.Pos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,33 +21,35 @@ public class King extends Piece {
         return 'k';
     }
 
+
     @Override
-    public List<Position> getPossibleMoves() {
-        Position currentPos = getCurrentPosition();
-        int currentRow = currentPos.getRow();
-        int moveCount = getMoveCount();
-        if (moveCount == 0)
-            currentRow = currentRow + 2;
-        else
-            currentRow = currentRow + 1;
-        Position potentialPos = currentPos;
-        potentialPos.setRow(currentRow);
+    public List<Position> getPossibleMoves(Position currentPosition) {
+        int currentRow = currentPosition.getRow();
+        char currentCol = currentPosition.getColumn();
+        //int[] travelDirectionList = {1, -1};
+        Position potentialPos = currentPosition;
         List<Position> positionList = new ArrayList<Position>();
+
+        //travel vertically
+        int newRow = currentRow + 1;
+        potentialPos.setRow(newRow);
         positionList.add(potentialPos);
 
+        //travel horizontally
+
+        //travel diagonnally
+        /*for (i=0 ;i<travelDirectionList.length; i++){
+            currentRow = currentRow +1*travelDirectionList[i];;
+            potentialPos.setRow(currentRow);
+            positionList.add(potentialPos);
+            for (j=0; j<travelDirectionList.length; j++){
+                currentCol = currentPosition.moveOver(currentCol,travelDirectionList[i]);
+                potentialPos.setColumn(currentCol);
+                positionList.add(potentialPos);
+            }
+        }*/
         return positionList;
     }
 
-    @Override
-    public boolean isValidMove(GameState state){
-        int currentRow = getCurrentPosition().getRow();
-        char currentCol = getCurrentPosition().getColumn();
-        int blockedRow = currentRow++;
-        Position blockedPosition = new Position(currentCol,blockedRow);
-        if (!state.isPieceAt(blockedPosition)){
-            return true;
-        }
-        return false;
-    }
 
 }

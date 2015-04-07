@@ -64,13 +64,42 @@ public class GameStateTest {
         assertNotNull("The list of white player pieces should not be null", whitePlayerPieces);
         assertEquals("The list of white player pieces should contain 16 pieces", whitePlayerPieces.size(),16);
 
-        List<Position> possibleMoves = state.getPossibleMoves();
-        int possibleMovesCount = possibleMoves.size();
-        assertNotNull("The list of possible moves should not be null");
-        assertEquals("The list of possible moves should contain positions of Pawns", possibleMovesCount,16);//this amount will change when piece logic is implemented
+       List<Position> possibleMoves = state.getPossibleMoves();
+       int possibleMovesCount = possibleMoves.size();
+       assertNotNull("The list of possible moves should not be null", possibleMoves);
+       assertEquals("The list of possible moves should contain positions of Pawns", possibleMovesCount, 20);//this amount will change when piece logic is fully implemented
 
-        //test isPieceAt
-        assertTrue("A piece should be at d8", state.isPieceAt(queenPos));
+    }
 
+    @Test
+    public void testMoveAbility() {
+        // Start the game
+        state.reset();
+
+        // Set the first player
+        state.setCurrentPlayer(Player.Black);
+        Player current = state.getCurrentPlayer();
+        assertEquals("The initial player should be White", Player.Black, current);
+
+        Piece blackPawn = state.getPieceAt("h7");
+        Position moveTo = new Position('h', 6);
+        state.move(blackPawn.getCurrentPosition(), moveTo);
+
+        assertEquals("Pawn should have moved to h6", blackPawn.getCurrentPosition(), moveTo);
+    }
+
+    @Test
+    public void testValidMove() {
+        // Start the game
+        state.reset();
+
+        // Set the first player
+        state.setCurrentPlayer(Player.Black);
+        Piece blackPawn = state.getPieceAt("h7");
+        Position validMove = new Position('h', 6);
+        state.move(blackPawn.getCurrentPosition(), validMove);
+        Position updatedPos = blackPawn.getCurrentPosition();
+
+        assertEquals("The pawn should have moved to the new position", validMove, updatedPos);
     }
 }

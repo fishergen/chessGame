@@ -23,33 +23,32 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public List<Position> getPossibleMoves() {
-        int currentRow = getCurrentPosition().getRow();
-        char currentCol = getCurrentPosition().getColumn();
-        int potentialRow;
+    public List<Position> getPossibleMoves(Position currentPosition) {
+        int currentRow = currentPosition.getRow();
+        char currentCol = currentPosition.getColumn();
+        int potentialRow, potentialRow2;
         int moveCount = getMoveCount();
         int direction = getMoveDirection();
-        if (moveCount == 0)
-            potentialRow = currentRow + 2*direction;
-        else
-            potentialRow = currentRow + 1*direction;
-        Position potentialPos = new Position(currentCol, potentialRow);
+        Position potentialPos = new Position(currentCol, currentRow);
+        Position potentialPos2= new Position(currentCol, currentRow);
         List<Position> positionList = new ArrayList<Position>();
-        positionList.add(potentialPos);
+        if (moveCount == 0) {
+            potentialRow = currentRow + 2 * direction;
+            potentialRow2 = currentRow + 1 * direction;
+            potentialPos.setRow(potentialRow);
+            potentialPos2.setRow(potentialRow2);
 
+            positionList.add(potentialPos);
+            positionList.add(potentialPos2);
+        }
+        else {
+            potentialRow = currentRow + 1 * direction;
+            potentialPos.setRow(potentialRow);
+            positionList.add(potentialPos);
+        }
         return positionList;
     }
 
-    @Override
-    public boolean isValidMove(GameState state){
-        int currentRow = getCurrentPosition().getRow();
-        char currentCol = getCurrentPosition().getColumn();
-        int blockedRow = currentRow++;
-        Position blockedPosition = new Position(currentCol,blockedRow);
-        if (!state.isPieceAt(blockedPosition)){
-            return true;
-        }
-        return false;
-    }
+
 
 }

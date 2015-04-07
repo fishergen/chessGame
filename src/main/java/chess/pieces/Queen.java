@@ -21,32 +21,44 @@ public class Queen extends Piece{
         return 'q';
     }
     @Override
-    public List<Position> getPossibleMoves() {
-        Position currentPos = getCurrentPosition();
-        int currentRow = currentPos.getRow();
-        int moveCount = getMoveCount();
-        if (moveCount == 0)
-            currentRow = currentRow + 2;
-        else
-            currentRow = currentRow + 1;
-        Position potentialPos = currentPos;
-        potentialPos.setRow(currentRow);
+    public List<Position> getPossibleMoves(Position currentPosition) {
+        int currentRow = currentPosition.getRow();
+        char currentCol = currentPosition.getColumn();
+        int[] travelDirectionList = {1, -1};
+        Position potentialPos = currentPosition;
         List<Position> positionList = new ArrayList<Position>();
-        positionList.add(potentialPos);
-
+        int i, j;
+        //move straight
+        if (currentRow == Position.MAX_ROW){
+            while (currentRow != Position.MIN_ROW){
+                currentRow = currentRow - 1;
+                potentialPos.setRow(currentRow);
+                positionList.add(potentialPos);
+            }
+        }else if(currentRow == Position.MIN_ROW){
+            while (currentRow != Position.MAX_ROW){
+                currentRow = currentRow + 1;
+                potentialPos.setRow(currentRow);
+                positionList.add(potentialPos);
+            }
+        }else if (currentRow < Position.MAX_ROW && currentRow < Position.MIN_ROW){
+            for (i = 0; i < travelDirectionList.length; i++) {
+                currentRow = currentRow + 1 * i;
+                potentialPos.setRow(currentRow);
+                positionList.add(potentialPos);
+                for (j = 0; j < travelDirectionList.length; j++) {
+                    currentCol = currentPosition.moveOver(currentCol, i);
+                    potentialPos.setColumn(currentCol);
+                    positionList.add(potentialPos);
+                }
+            }
+        }else{
+            System.out.println("Your piece appears to be off of the board.");
+        }
+        //move sideways
+        //move diagonally
         return positionList;
     }
 
-    @Override
-    public boolean isValidMove(GameState state){
-        int currentRow = getCurrentPosition().getRow();
-        char currentCol = getCurrentPosition().getColumn();
-        int blockedRow = currentRow++;
-        Position blockedPosition = new Position(currentCol,blockedRow);
-        if (!state.isPieceAt(blockedPosition)){
-            return true;
-        }
-        return false;
-    }
 
 }

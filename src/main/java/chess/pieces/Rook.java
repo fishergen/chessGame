@@ -3,6 +3,7 @@ package chess.pieces;
 import chess.GameState;
 import chess.Player;
 import chess.Position;
+import javafx.geometry.Pos;
 import org.apache.commons.collections4.bidimap.DualHashBidiMap;
 
 import java.util.ArrayList;
@@ -23,32 +24,34 @@ public class Rook extends Piece {
     }
 
     @Override
-    public List<Position> getPossibleMoves() {
-        Position currentPos = getCurrentPosition();
-        int currentRow = currentPos.getRow();
-        int moveCount = getMoveCount();
-        if (moveCount == 0)
-            currentRow = currentRow + 2;
-        else
-            currentRow = currentRow + 1;
-        Position potentialPos = currentPos;
-        potentialPos.setRow(currentRow);
+    public List<Position> getPossibleMoves(Position currentPosition) {
+        int[] travelDirectionList = {1,-1};
+        int currentRow = currentPosition.getRow();
+        char currentCol = currentPosition.getColumn();
         List<Position> positionList = new ArrayList<Position>();
-        positionList.add(potentialPos);
-
+        int newRow;
+        char rightCol,leftCol;
+        int i;
+        //while not on edge of board
+        //while (currentPosition.atBoardEdge() == false) {
+        if (currentPosition.getRow() == Position.MAX_ROW){
+            newRow = currentRow + 1;
+            Position forwardPos = new Position(currentCol, newRow);
+        }
+            for (i = 0; i < travelDirectionList.length; i++) {
+                newRow = currentRow + 1 * i;
+                Position forwardPos = new Position(currentCol, newRow);
+                positionList.add(forwardPos);
+            }
+            rightCol = currentPosition.moveRight(currentCol);
+            Position rightPos = new Position(rightCol, currentRow);
+            positionList.add(rightPos);
+            leftCol = currentPosition.moveLeft(currentCol);
+            Position leftPos = new Position(leftCol, currentRow);
+            positionList.add(leftPos);
+        //}
         return positionList;
     }
 
-    @Override
-    public boolean isValidMove(GameState state){
-        int currentRow = getCurrentPosition().getRow();
-        char currentCol = getCurrentPosition().getColumn();
-        int blockedRow = currentRow++;
-        Position blockedPosition = new Position(currentCol,blockedRow);
-        if (!state.isPieceAt(blockedPosition)){
-            return true;
-        }
-        return false;
-    }
 
 }

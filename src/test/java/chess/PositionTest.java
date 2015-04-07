@@ -1,5 +1,6 @@
 package chess;
 
+import javafx.geometry.Pos;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
@@ -24,4 +25,38 @@ public class PositionTest {
 
         assertEquals("The positions should equal each other", one, other);
     }
+    @Test
+    public void testColumnShift() {
+        Position toShift = new Position('d', 2);
+        char toShiftColumn = toShift.getColumn();
+        char movedRightColumn = toShift.moveRight(toShiftColumn);
+        char movedLeftColumn = toShift.moveLeft(toShiftColumn);
+
+        assertEquals("The column should have shifted to the right", 'e', movedRightColumn);
+        assertEquals("The column should have shifted to the left", 'c', movedLeftColumn);
+    }
+
+    @Test
+    public void testAtBoardEdge(){
+        Position edgePosition = new Position('i', 3);
+        Position edgePosition2 = new Position('c', 0);
+        Position notAtEdge = new Position('d', 4);
+
+        assertTrue("This position is on an edge column", edgePosition.atBoardEdge());
+        assertTrue("This position is on an edge row", edgePosition2.atBoardEdge());
+        assertFalse("This position is not on the edge", notAtEdge.atBoardEdge());
+    }
+
+    /*@Test
+    public void testFromString(){
+        String position = "h7";
+        Position stringPos = new Position("h7");
+        Position newPos = stringPos.fromString(position);
+
+        assertEquals("The strings of this position should be identical", "h7", newPos);
+        assertNotSame("The strings of this position should be identical", "h1", newPos);
+
+    }*/
+
+
 }
